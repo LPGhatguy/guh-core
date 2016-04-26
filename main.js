@@ -1,5 +1,7 @@
 "use strict";
 
+const pack = require("./package.json");
+
 const core = require("./core");
 require("./args")(process.argv);
 
@@ -10,6 +12,14 @@ const browserSync = require("browser-sync").create();
 core.browserSync = browserSync;
 
 const defaultTask = () => {
+	console.log(`Building ${ core.projectName } v${ core.projectVersion }`);
+	console.log(`Using guh-core ${ pack.version }`);
+	console.log(`Loading dependencies`);
+
+	for (const module of core.modules) {
+		require("./" + module);
+	}
+
 	if (core.get("browsersync")) {
 		let bsSettings = core.preset.browsersync != null ? core.preset.browsersync : core.conf.browsersync;
 
@@ -23,16 +33,4 @@ const defaultTask = () => {
 	return gulp.start(core.buildTasks);
 };
 
-gulp.task("default", defaultTask);
-
-module.exports = () => {
-	console.log(`Building ${ core.projectName } v${ core.projectVersion }`);
-	console.log(`Using guh v${ core.version }`);
-	console.log(`Loading dependencies`);
-
-	for (const module of core.modules) {
-		require("./" + module);
-	}
-
-	defaultTask();
-}
+module.exports = defaultTask;
