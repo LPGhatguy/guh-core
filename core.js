@@ -299,7 +299,7 @@ const core = {
 
 		return through.obj((file, enc, cb) => {
 			if (callback) {
-				callback(file.path, file.contents.toString("utf8"));
+				callback(pipeline, file.path, file.contents.toString("utf8"));
 			}
 
 			cb(null, file);
