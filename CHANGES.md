@@ -1,5 +1,8 @@
 # guh Changes
 
+## 1.2.1
+- Fix incorrect behavior of `--once=no`, which is not valid.
+
 ## 1.2.0
 - Added support for guh `--debug` flag
 - Added `--once` flag, which disables Browsersync and file watching

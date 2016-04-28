@@ -60,8 +60,10 @@ module.exports = (sourceArgs) => {
 		black: null,
 
 		set once(value) {
-			this.browsersync = !value;
-			this.watch = !value;
+			if (value) {
+				this.browsersync = false;
+				this.watch = false;
+			}
 		}
 	};
 
