@@ -6,10 +6,15 @@ const modules = ["pipelines/browser", "pipelines/server", "pipelines/styles", "p
 const Loader = require("./dep-loader");
 const gutil = require("gulp-util");
 
-const getValue = (name, base, core) => {
-	// console.trace("deprecated");
-	return core.getPrimitive(name, base);
-};
+const objectHasOneOf = (map, names) => {
+	for (const name of names) {
+		if (map[name]) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 const valueTypes = {
 	browsersync: "primitive",
@@ -104,7 +109,7 @@ const core = {
 	},
 
 	getList(name, pipeline) {
-		let list = [];
+		const list = [];
 
 		if (core.args[name] != null) {
 			list.push(...core.args[name]);
@@ -126,7 +131,7 @@ const core = {
 	},
 
 	get preset() {
-		let name = core.args.preset || core.conf.preset;
+		const name = core.args.preset || core.conf.preset;
 
 		if (!core.conf.presets[name]) {
 			console.error(`Couldn't find preset '${name}'!`);
@@ -150,19 +155,19 @@ const core = {
 	},
 
 	getPipelines(type) {
-		let unfiltered = core.conf.pipelines.slice();
+		const unfiltered = core.conf.pipelines.slice();
 
 		if (core.preset.pipelines) {
 			unfiltered.push(...core.preset.pipelines);
 		}
 
 		// Patch pipelines with overrides in presets
-		let byID = new Map();
-		let unID = [];
+		const byID = new Map();
+		const unID = [];
 
-		for (let pipeline of unfiltered) {
+		for (const pipeline of unfiltered) {
 			if (pipeline.id != null) {
-				let existing = byID.get(pipeline.id);
+				const existing = byID.get(pipeline.id);
 
 				if (existing) {
 					Object.assign(existing, pipeline);
@@ -174,21 +179,11 @@ const core = {
 			}
 		}
 
-		let pipelines = unID.slice();
+		const pipelines = unID.slice();
 
-		for (let pair of byID) {
-			let pipeline = pair[1];
+		for (const pair of byID) {
+			const pipeline = pair[1];
 			pipelines.push(pipeline);
-		}
-
-		const objectHasOneOf = (map, names) => {
-			for (let name of names) {
-				if (map[name]) {
-					return true;
-				}
-			}
-
-			return false;
 		}
 
 		// Filter presets based on names and tags
@@ -281,7 +276,7 @@ const core = {
 	},
 
 	getNotify(msg) {
-		let notify = require("gulp-notify");
+		const notify = require("gulp-notify");
 
 		let notifier;
 
