@@ -1,6 +1,6 @@
 {
   "name": "guh-core",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "The core of the guh project",
   "dependencies": {
     "autoprefixer": "^6.3.3",
