@@ -106,7 +106,8 @@ const buildPipeline = pipeline => {
 		stream = stream
 			.pipe(gulp.dest(outDir))
 			.pipe(core.browserSync.stream())
-			.pipe(core.getNotify(core.getName(pipeline) + ": done!"));
+			.pipe(core.getNotify(core.getName(pipeline) + ": done!"))
+			.pipe(core.getCallback(pipeline));
 
 		return stream;
 	}

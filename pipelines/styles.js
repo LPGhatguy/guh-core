@@ -124,7 +124,8 @@ const buildPipeline = pipeline => {
 	stream = stream
 		.pipe(gulp.dest(ppath.dir))
 		.pipe(core.browserSync.stream({match: "**/*.css"}))
-		.pipe(core.getNotify(core.getName(pipeline) + ": done!"));
+		.pipe(core.getNotify(core.getName(pipeline) + ": done!"))
+		.pipe(core.getCallback(pipeline));
 
 	return stream;
 };

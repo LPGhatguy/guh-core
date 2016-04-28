@@ -289,6 +289,19 @@ const core = {
 			onLast: true,
 			notifier: notifier
 		});
+	},
+
+	getCallback(pipeline) {
+		const callback = pipeline.callback;
+		const through = require("through2");
+
+		return through.obj((file, enc, cb) => {
+			if (callback) {
+				callback(file.path, file.contents.toString("utf8"));
+			}
+
+			cb(null, file);
+		});
 	}
 };
 

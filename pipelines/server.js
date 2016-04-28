@@ -171,7 +171,8 @@ const buildPipeline = (pipeline, input) => {
 
 	let js = stream.js
 		.pipe($.sourcemaps.write("./"))
-		.pipe(gulp.dest(dest));
+		.pipe(gulp.dest(dest))
+		.pipe(core.getCallback(pipeline));
 
 	streams.push(js);
 
@@ -185,7 +186,8 @@ const buildPipeline = (pipeline, input) => {
 			.pipe(sortTypings(pipeline))
 			.pipe(mergeTypings(pipeline))
 			.pipe($.concat(outFileName))
-			.pipe(gulp.dest(outDir));
+			.pipe(gulp.dest(outDir))
+			.pipe(core.getCallback(pipeline));
 
 		streams.push(dts);
 	}
