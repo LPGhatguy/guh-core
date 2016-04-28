@@ -8,6 +8,8 @@ const argTypes = {
 	minify: "boolean",
 	notify: "boolean",
 	browsersync: "boolean",
+	debug: "boolean",
+	once: "boolean",
 
 	white: "set",
 	gray: "set",
@@ -40,7 +42,7 @@ module.exports = (sourceArgs) => {
 	// pull the process arguments we care about out
 	let cmdArgs = [];
 
-	for (let i = 2; i < sourceArgs.length; i++) {
+	for (let i = 0; i < sourceArgs.length; i++) {
 		const arg = sourceArgs[i];
 
 		if (arg.startsWith("--")) {
@@ -55,7 +57,12 @@ module.exports = (sourceArgs) => {
 	let args = core.args = {
 		white: null,
 		gray: null,
-		black: null
+		black: null,
+
+		set once(value) {
+			this.browsersync = !value;
+			this.watch = !value;
+		}
 	};
 
 	for (let arg of cmdArgs) {
@@ -72,13 +79,18 @@ module.exports = (sourceArgs) => {
 
 		// Flag, not a setter!
 		if (!setter) {
-			if (argTypes[arg] === "boolean") {
-				args[arg] = true;
-				continue;
-			}
+			if (argTypes[arg]) {
+				if (argTypes[arg] === "boolean") {
+					args[arg] = true;
+					continue;
+				}
 
-			console.error(`Unknown command line option '${arg}'`);
-			process.exit(1);
+				console.warn(`Command line option '${ arg }' is used like a flag, but is not a flag. Skipping...`);
+				continue;
+			} else {
+				console.error(`Unknown command line option '${ arg }'`);
+				process.exit(1);
+			}
 		}
 
 		let key = setter[1];
@@ -98,7 +110,6 @@ module.exports = (sourceArgs) => {
 
 			continue;
 		}
-
 
 		if (argTypes[key] === "boolean") {
 			args[key] = toBoolean(value);
