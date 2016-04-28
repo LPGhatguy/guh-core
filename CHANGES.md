@@ -4,6 +4,7 @@
 - Added `--dry` parameter to disable outputting to the filesystem
 - `output` in pipelines is no longer required
 	- Omitting the property disables writing to the filesystem
+- Added `callback` parameter to pipelines to allow retrieving built file contents
 
 ## 1.2.1
 - Fix incorrect behavior of `--once=no`, which is not valid
