@@ -31,9 +31,14 @@ const verifyPipeline = pipeline => {
 const buildPipeline = (pipeline, input) => {
 	$.gutil.log($.gutil.colors.green(core.getName(pipeline) + ": building..."));
 
-	let buildPath = core.get("out", pipeline);
+	const shouldOutput = core.shouldPipelineOutput(pipeline);
+	const buildPath = core.get("out", pipeline);
 
-	let dest = $.path.join(buildPath, pipeline.output);
+	let dest;
+
+	if (shouldOutput) {
+		dest = $.path.join(buildPath, pipeline.output);
+	}
 
 	let stream = gulp.src(input ? input : pipeline.input);
 
@@ -41,8 +46,13 @@ const buildPipeline = (pipeline, input) => {
 		stream = stream.pipe($.rename(pipeline.rename));
 	}
 
-	stream = stream.pipe(gulp.dest(dest))
-		.pipe(core.browserSync.stream())
+	if (shouldOutput) {
+		stream = stream
+			.pipe(gulp.dest(dest))
+			.pipe(core.browserSync.stream());
+	}
+
+	stream = stream
 		.pipe(core.getNotify(core.getName(pipeline) + ": done!"))
 		.pipe(core.getCallback(pipeline));
 

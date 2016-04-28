@@ -135,9 +135,16 @@ const verifyPipeline = pipeline => {
 const buildPipeline = (pipeline, input) => {
 	$.gutil.log($.gutil.colors.green(core.getName(pipeline) + ": building..."));
 
+	const shouldOutput = core.shouldPipelineOutput(pipeline);
+	const shouldOutputTypings = core.shouldPipelineOutput(pipeline, "typingsOutput");
 	const buildPath = core.get("out", pipeline);
 
-	const dest = $.path.join(buildPath, pipeline.output);
+	let dest;
+
+	if (shouldOutput) {
+		dest = $.path.join(buildPath, pipeline.output);
+	}
+
 	const sourcedir = $.path.parse(pipeline.input).dir;
 
 	const entries = [input ? input : pipeline.input];
@@ -169,14 +176,20 @@ const buildPipeline = (pipeline, input) => {
 
 	const streams = [];
 
-	let js = stream.js
-		.pipe($.sourcemaps.write("./"))
-		.pipe(gulp.dest(dest))
+	let js = stream.js;
+
+	if (shouldOutput) {
+		js = js
+			.pipe($.sourcemaps.write("./"))
+			.pipe(gulp.dest(dest));
+	}
+
+	js = js
 		.pipe(core.getCallback(pipeline));
 
 	streams.push(js);
 
-	if (pipeline.typingsOutput) {
+	if (shouldOutputTypings) {
 		const outDir = $.path.join(buildPath, $.path.dirname(pipeline.typingsOutput));
 		const outFileName = $.path.basename(pipeline.typingsOutput);
 

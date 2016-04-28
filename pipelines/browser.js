@@ -46,11 +46,16 @@ const verifyPipeline = pipeline => {
 };
 
 const buildPipeline = pipeline => {
+	const shouldOutput = core.shouldPipelineOutput(pipeline);
 	let buildPath = core.get("out", pipeline);
 
-	let dest = $.path.join(buildPath, pipeline.output);
-	let ppath = $.path.parse(dest);
-	let outDir = ppath.dir;
+	let dest;
+	let ppath;
+
+	if (shouldOutput) {
+		dest = $.path.join(buildPath, pipeline.output);
+		ppath = $.path.parse(dest);
+	}
 
 	let entries = [pipeline.input];
 
@@ -95,17 +100,23 @@ const buildPipeline = pipeline => {
 				.pipe($.uglify())
 		}
 
-		stream = stream
-			.pipe($.rename(ppath.base));
+		if (shouldOutput) {
+			stream = stream
+				.pipe($.rename(ppath.base));
+		}
 
 		if (core.get("sourcemaps", pipeline)) {
 			stream = stream
 				.pipe($.sourcemaps.write("./"));
 		}
 
+		if (shouldOutput) {
+			stream = stream
+				.pipe(gulp.dest(ppath.dir))
+				.pipe(core.browserSync.stream());
+		}
+
 		stream = stream
-			.pipe(gulp.dest(outDir))
-			.pipe(core.browserSync.stream())
 			.pipe(core.getNotify(core.getName(pipeline) + ": done!"))
 			.pipe(core.getCallback(pipeline));
 

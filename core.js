@@ -23,6 +23,7 @@ const valueTypes = {
 	sourcemaps: "primitive",
 	minify: "primitive",
 	notify: "primitive",
+	dry: "primitive",
 
 	preset: "primitive",
 	out: "primitive",
@@ -38,6 +39,7 @@ const defaultValues = {
 	sourcemaps: true,
 	minify: false,
 	notify: false,
+	dry: false,
 
 	preset: "debug",
 	out: "debug",
@@ -232,8 +234,8 @@ const core = {
 			return new Error("Expected a string for the pipeline 'input' property.");
 		}
 
-		if (typeof pipeline.output !== "string") {
-			return new Error("Expected a string for the pipeline 'output' property.");
+		if (pipeline.output != null && typeof pipeline.output !== "string") {
+			return new Error("Expected a string for the pipeline 'output' property if specified.");
 		}
 
 		if (pipeline.name != null && typeof pipeline.name !== "string") {
@@ -302,6 +304,18 @@ const core = {
 
 			cb(null, file);
 		});
+	},
+
+	shouldPipelineOutput(pipeline, property) {
+		if (property == null) {
+			property = "output";
+		}
+
+		if (this.get("dry", pipeline)) {
+			return false;
+		}
+
+		return pipeline[property] != null;
 	}
 };
 

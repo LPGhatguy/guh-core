@@ -1,5 +1,8 @@
 # guh Changes
 
+## 1.3.0
+
+
 ## 1.2.1
 - Fix incorrect behavior of `--once=no`, which is not valid.
 

@@ -53,24 +53,30 @@ const verifyPipeline = pipeline => {
 const buildPipeline = pipeline => {
 	$.gutil.log($.gutil.colors.green(core.getName(pipeline) + ": building..."));
 
-	let buildPath = core.get("out", pipeline);
+	const shouldOutput = core.shouldPipelineOutput(pipeline);
+	const buildPath = core.get("out", pipeline);
 
-	let dest = $.path.join(buildPath, pipeline.output);
-	let ppath = $.path.parse(dest);
+	let dest;
+	let ppath;
 
-	let sassConf = {};
+	if (shouldOutput) {
+		dest = $.path.join(buildPath, pipeline.output);
+		ppath = $.path.parse(dest);
+	}
+
+	const sassConf = {};
 
 	if (pipeline.config && pipeline.config.sass) {
 		Object.assign(sassConf, pipeline.config.sass);
 	}
 
 	// Processors run before Sass
-	let preProcessors = [];
+	const preProcessors = [];
 
 	// Processors run after Sass
-	let postProcessors = [];
+	const postProcessors = [];
 
-	let sassyImportConfig = {};
+	const sassyImportConfig = {};
 
 	if (pipeline.config && pipeline.config.sassyImport) {
 		Object.assign(sassyImportConfig, pipeline.config.sassyImport);
@@ -114,16 +120,24 @@ const buildPipeline = pipeline => {
 			.on("error", handler)
 		)
 		.pipe($.postcss(postProcessors), { sourcemap: true })
-		.pipe($.rename(ppath.base));
+
+	if (shouldOutput) {
+		stream = stream
+			.pipe($.rename(ppath.base));
+	}
 
 	if (core.get("sourcemaps", pipeline)) {
 		stream = stream
 			.pipe($.sourcemaps.write("./"));
 	}
 
+	if (shouldOutput) {
+		stream = stream
+			.pipe(gulp.dest(ppath.dir))
+			.pipe(core.browserSync.stream({match: "**/*.css"}));
+	}
+
 	stream = stream
-		.pipe(gulp.dest(ppath.dir))
-		.pipe(core.browserSync.stream({match: "**/*.css"}))
 		.pipe(core.getNotify(core.getName(pipeline) + ": done!"))
 		.pipe(core.getCallback(pipeline));
 
@@ -139,7 +153,7 @@ gulp.task("build:styles", () => {
 	}
 
 	for (let pipeline of pipelines) {
-		let result = verifyPipeline(pipeline);
+		const result = verifyPipeline(pipeline);
 
 		if (result instanceof Error) {
 			throw result;
@@ -147,7 +161,7 @@ gulp.task("build:styles", () => {
 
 		merged.add(buildPipeline(pipeline));
 
-		let sourcedir = $.path.parse(pipeline.input).dir;
+		const sourcedir = $.path.parse(pipeline.input).dir;
 
 		if (core.get("watch", pipeline)) {
 			gulp.watch(sourcedir + "/**/*.scss", e => {

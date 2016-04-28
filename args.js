@@ -10,6 +10,7 @@ const argTypes = {
 	browsersync: "boolean",
 	debug: "boolean",
 	once: "boolean",
+	dry: "boolean",
 
 	white: "set",
 	gray: "set",
