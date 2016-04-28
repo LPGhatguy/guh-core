@@ -1,5 +1,9 @@
 # guh Changes
 
+## 1.2.0
+- Added support for guh `--debug` flag
+- Added `--once` flag, which disables Browsersync and file watching
+
 ## 1.1.0
 - guh-core no longer registers a Gulp task
 
