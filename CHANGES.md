@@ -1,5 +1,8 @@
 # guh Changes
 
+## 1.3.2
+- Added (missing) support for arrays in pipeline inputs
+
 ## 1.3.1
 - Added `callback` parameter to pipelines to allow retrieving built file contents
 
