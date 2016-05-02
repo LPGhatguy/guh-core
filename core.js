@@ -230,7 +230,7 @@ const core = {
 			return new Error("Expected a pipeline object.");
 		}
 
-		if (typeof pipeline.input !== "string") {
+		if (typeof pipeline.input !== "string" && !Array.isArray(pipeline.input)) {
 			return new Error("Expected a string for the pipeline 'input' property.");
 		}
 
