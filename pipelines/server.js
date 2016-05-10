@@ -88,6 +88,11 @@ const mergeTypings = pipeline => {
 			return `from "${ normalized }"`;
 		});
 
+		// Remove ambient declarations that would be doubly ambient
+		contents = contents.replace(/( ?)declare /g, (whole, space) => {
+			return space;
+		});
+
 		// Indent blocks in to make them look nicer.
 		contents = contents.replace(/\n/g, "\n\t").trim();
 
