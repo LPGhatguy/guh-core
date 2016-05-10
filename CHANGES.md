@@ -1,5 +1,8 @@
 # guh Changes
 
+## 1.3.3
+- Fixed doubly-ambient declarations when building TS typings
+
 ## 1.3.2
 - Added (missing) support for arrays in pipeline inputs
 
