@@ -162,7 +162,7 @@ const buildPipeline = (pipeline, input) => {
 		declaration: false
 	};
 
-	if (pipeline.typingsOutput) {
+	if (pipeline.typingsOutput != null) {
 		config.declaration = true;
 	}
 
@@ -195,15 +195,23 @@ const buildPipeline = (pipeline, input) => {
 	streams.push(js);
 
 	if (shouldOutputTypings) {
-		const outDir = $.path.join(buildPath, $.path.dirname(pipeline.typingsOutput));
-		const outFileName = $.path.basename(pipeline.typingsOutput);
+		let outDir = $.path.join(buildPath, pipeline.typingsOutput);
 
-		const typingsOutput = $.path.join(buildPath, pipeline.typingsOutput);
+		let dts = stream.dts;
 
-		let dts = stream.dts
-			.pipe(sortTypings(pipeline))
-			.pipe(mergeTypings(pipeline))
-			.pipe($.concat(outFileName))
+		if (pipeline.typingsOutputType == null || pipeline.typingsOutputType === "ambient") {
+			outDir = $.path.join(buildPath, $.path.dirname(pipeline.typingsOutput));
+			const outFileName = $.path.basename(pipeline.typingsOutput);
+
+			dts = dts
+				.pipe(sortTypings(pipeline))
+				.pipe(mergeTypings(pipeline))
+				.pipe($.concat(outFileName));
+		} else if (pipeline.typingsOutputType === "module") {
+			// Nothing necessary to transform
+		}
+
+		dts = dts
 			.pipe(gulp.dest(outDir))
 			.pipe(core.getCallback(pipeline));
 

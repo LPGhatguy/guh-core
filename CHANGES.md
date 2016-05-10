@@ -1,5 +1,11 @@
 # guh Changes
 
+## 1.4.0
+- Fixed typings not outputting with `typingsOutput` of empty string
+- Added `typingsOutputType` parameter to choose output type
+	- Defaults to `ambient`, which bundles all modules into a single ambient file
+	- Also available is `module`, which puts typings files next to output JS.
+
 ## 1.3.3
 - Fixed doubly-ambient declarations when building TS typings
 
