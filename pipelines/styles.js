@@ -134,7 +134,7 @@ const buildPipeline = pipeline => {
 	if (shouldOutput) {
 		stream = stream
 			.pipe(gulp.dest(ppath.dir))
-			.pipe(core.browserSync.stream({match: "**/*.css"}));
+			.pipe(core.browserSync.stream({ match: "**/*.css" }));
 	}
 
 	stream = stream
