@@ -164,11 +164,16 @@ gulp.task("build:styles", () => {
 		const sourcedir = $.path.parse(pipeline.input).dir;
 
 		if (core.get("watch", pipeline)) {
-			gulp.watch(sourcedir + "/**/*.scss", e => {
-				return buildPipeline(pipeline);
-			});
+			let watches = [
+				$.path.join(sourcedir, "/**/*.scss"),
+				$.path.join(sourcedir, "/**/*.json")
+			];
 
-			gulp.watch(sourcedir + "/**/*.json", e => {
+			if (Array.isArray(pipeline.watchPaths)) {
+				watches = pipeline.watchPaths.slice();
+			}
+
+			gulp.watch(watches, e => {
 				return buildPipeline(pipeline);
 			});
 		}

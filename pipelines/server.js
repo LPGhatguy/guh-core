@@ -242,7 +242,15 @@ gulp.task("build:server", () => {
 		merged.add(buildPipeline(pipeline));
 
 		if (core.get("watch", pipeline)) {
-			gulp.watch(pipeline.input, e => {
+			let watches = [
+				pipeline.input
+			];
+
+			if (Array.isArray(pipeline.watches)) {
+				watches = pipeline.watches.slice();
+			}
+
+			gulp.watch(watches, e => {
 				if (pipeline.config && pipeline.config.partialRebuild) {
 					buildPipeline(pipeline, e.path);
 				} else {

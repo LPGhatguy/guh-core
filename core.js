@@ -250,6 +250,10 @@ const core = {
 			return new Error("Expected null or an array for the pipeline 'tags' property.");
 		}
 
+		if (pipeline.watchPaths != null && !Array.isArray(pipeline.watchPaths)) {
+			return new Error("Expected null or an array for the pipeline 'watchPaths' property.");
+		}
+
 		return true;
 	},
 

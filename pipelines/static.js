@@ -77,8 +77,16 @@ gulp.task("build:static", () => {
 		merged.add(buildPipeline(pipeline));
 
 		if (core.get("watch", pipeline)) {
-			gulp.watch(pipeline.input, e => {
-				buildPipeline(pipeline, e.path);
+			let watches = [
+				pipeline.input
+			];
+
+			if (Array.isArray(pipeline.watchPaths)) {
+				watches = pipeline.watchPaths;
+			}
+
+			gulp.watch(watches, e => {
+				return buildPipeline(pipeline);
 			});
 		}
 	}
