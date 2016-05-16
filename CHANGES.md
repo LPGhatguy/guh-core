@@ -1,5 +1,8 @@
 # guh Changes
 
+## 1.5.0
+- Added `watchPaths` parameter to all pipelines
+
 ## 1.4.0
 - Fixed typings not outputting with `typingsOutput` of empty string
 - Added `typingsOutputType` parameter to choose output type
