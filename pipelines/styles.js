@@ -112,14 +112,15 @@ const buildPipeline = pipeline => {
 	let stream = gulp.src(pipeline.input)
 		.pipe($.sourcemaps.init())
 		.pipe(
-			$.postcss(preProcessors, { syntax: $.syntaxSCSS, sourcemap: true })
+			$.postcss(preProcessors, { syntax: $.syntaxSCSS, map: true })
 			.on("error", handler)
 		)
 		.pipe(
 			$.sass(sassConf)
 			.on("error", handler)
 		)
-		.pipe($.postcss(postProcessors), { sourcemap: true })
+		.pipe($.sourcemaps.write())
+		.pipe($.postcss(postProcessors), { map: true })
 
 	if (shouldOutput) {
 		stream = stream
