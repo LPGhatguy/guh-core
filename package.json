@@ -1,6 +1,6 @@
 {
   "name": "guh-core",
-  "version": "1.5.0",
+  "version": "3.0.0",
   "description": "The core of the guh project",
   "dependencies": {
     "autoprefixer": "^6.3.3",
@@ -31,9 +31,6 @@
     "vinyl-fs": "^2.4.3",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.4.0"
-  },
-  "bin": {
-    "guh2": "bin/guh.js"
   },
   "main": "lib.js",
   "engines": {

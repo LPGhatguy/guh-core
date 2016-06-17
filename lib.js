@@ -1,24 +1,13 @@
+"use strict";
+
 const pack = require("./package.json");
-const Config = require("./lib/Config");
-const Loader = require("./lib/Loader");
-const Pipeline = require("./lib/Pipeline");
 
 module.exports = {
-	Config: Config,
-	Loader: Loader,
-	Pipeline: Pipeline,
+	Config: require("./lib/Config"),
+	Loader: require("./lib/Loader"),
+	Pipeline: require("./lib/Pipeline"),
+	// ArgBuilder: require("./lib/ArgBuilder"),
+	Host: require("./lib/Host"),
 
-	version: pack.version,
-
-	log(...args) {
-		console.log(...args);
-	},
-
-	error(...args) {
-		console.error(...args);
-	},
-
-	plugins(plugins) {
-		plugins.forEach(f => f(this));
-	}
+	version: pack.version
 };
