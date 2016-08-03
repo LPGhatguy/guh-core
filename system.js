@@ -3,9 +3,22 @@
 const gutil = require("gulp-util");
 const notifier = require("node-notifier");
 
+const messages = {
+	BuildStarted: (system, id) => {
+		system.note(`Building ${ id }...`);
+	},
+	BuildCompleted: (system, id) => {
+		system.success(`${ id } complete!`);
+	},
+	BuildFailed: (system, id, error) => {
+		system.error(`Error building ${ id }:`, error);
+	}
+};
+
 class System {
 	constructor(config) {
 		this.config = config;
+		this.messages = messages;
 	}
 
 	message(...texts) {
@@ -24,11 +37,19 @@ class System {
 	}
 
 	note(title, body) {
+		this.message(gutil.colors.blue(title), body);
+	}
+
+	warning(title, body) {
 		this.message(gutil.colors.yellow(title), body);
 	}
 
 	success(title, body) {
 		this.message(gutil.colors.green(title), body);
+	}
+
+	event(event, ...args) {
+		return this.messages[event](this, ...args);
 	}
 }
 

@@ -29,24 +29,30 @@ function fillConfig(config) {
 
 function getLaneArguments(config, lane) {
 	return {
+		id: lane.id,
 		input: lane.input,
 		output: lane.output,
 		options: lane.options || {}
 	};
 }
 
+function introText(config) {
+	const system = new System(config);
+
+	system.message(`Building ${ config.pack.name } v${ config.pack.version }`);
+	system.message(`Using guh-core ${ pack.version }`);
+}
+
 function guh(config) {
 	fillConfig(config);
-
-	console.log(`Building ${ config.pack.name } v${ config.pack.version }`);
-	console.log(`Using guh-core ${ pack.version }`);
+	introText(config);
 
 	const stream = merge();
 
 	for (const lane of config.lanes) {
 		const args = getLaneArguments(config, lane);
-
-		stream.add(lane.type(new System(config), args));
+		const laneStream = lane.type(new System(config), args);
+		stream.add(laneStream);
 	}
 
 	return stream;
@@ -54,6 +60,7 @@ function guh(config) {
 
 guh.watch = function watch(config) {
 	fillConfig(config);
+	introText(config);
 
 	for (const lane of config.lanes) {
 		const args = getLaneArguments(config, lane);
